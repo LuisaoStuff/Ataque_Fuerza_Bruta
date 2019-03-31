@@ -20,51 +20,73 @@ else
 	exit
 fi
 
-Interv=$(cat ./Parametros/Intervalo)
-Dicc=$(cat ./Parametros/Diccionario)
-Fecha=$(cat ./Parametros/Ultima-Ejecucion)
+ruta=$0
+ruta=$(echo "${ruta/\/Check-Pass-Config.sh/}")
 
-Limpiar 7
-echo '	Este es el script de configuración de "Check-Pass" \n'
-echo '		Parámetros actuales:'
-echo "		- Intervalo: 		$Interv"
-echo "		- Diccionario:		$Dicc"
-echo "		- Última vez ejecutado:	$Fecha \n"
-read -p "	¿Deseas modificar algún parámetro? (S/N) " D
+Interv=$(cat "$ruta/Parametros/Intervalo")
+Dicc=$(cat "$ruta/Parametros/Diccionario")
+Fecha=$(cat "$ruta/Parametros/Ultima-Ejecucion")
+Comando=$(cat "$ruta/Parametros/Comando")
 
-if [ "$D" = "S" -o "$D" = "s" ]; then	
+echo ""
+
+echo 'Este es el script de configuración de "Check-Pass"' > $ruta/temp.txt
+echo 'Parámetros actuales:' >> $ruta/temp.txt
+echo "- Intervalo: 		$Interv" >> $ruta/temp.txt
+echo "- Diccionario:		$Dicc" >> $ruta/temp.txt
+echo "- Comando:		$Comando" >> $ruta/temp.txt
+echo "- Última ejecucion:	$Fecha" >> $ruta/temp.txt
+echo ""
+
+
+dialog --backtitle "Configuración" \
+ --keep-window --exit-label "Continuar" --textbox $ruta/temp.txt 0 0 \
+ --and-widget --keep-window --yesno "¿Deseas modificar los parametros?" 0 0
+
+rm $ruta/temp.txt
+
+if [ $? -eq 0 ]; then	
 	while true; do
+		
+		Opcion=$(dialog --backtitle "Configuración" --cancel-label "Salir" \
+		--menu "Selecciona una opción" 0 0 0 \
+		1 "Ejecutar Check-Pass ahora" \
+		2 "Seleccionar/Crear diccionario" \
+		3 "Modificar el intervalo de tiempo" \
+		4 "Cambiar paquete de ejecución" \
+		5 "Cambiar fecha de inicio" \
+		6 "Lista de usuarios" 3>&1 1>&2 2>&3)
 
-		Limpiar 8
-		echo '	Seleccione a continuación una de las siguientes opciones:'
-		echo '\n		1- Ejecutar el "Check-Pass" ahora'
-		echo '		2- Seleccionar/Crear diccionario'
-		echo '		3- Modificar intervalo de tiempo'
-		echo '		0- Salir\n'
-		read -p "	Opcion: " Opcion
-
-		case "$Opcion"	in
-		"0")
-		break
-		;;	
-		"1")
-		echo "Opcion $Opcion"
-		Pausa
-		;;
-		"2")
-		echo "Opcion $Opcion"
-		Pausa
-		;;
-		"3")
-		echo "Opcion $Opcion"
-		Pausa
-		;;
-		*)
-		echo "	Debes introducir una opcion válida"
-		Pausa
-		esac
+		if [ $? -eq 0 ]; then
+			case "$Opcion"	in
+			"1")
+				echo "Opcion $Opcion"
+				Pausa
+			;;
+			"2")
+				echo "Opcion $Opcion"
+				Pausa
+			;;
+			"3")
+				echo "Opcion $Opcion"
+				Pausa
+			;;
+			"4")
+				bash $ruta/Config/CommandMenu.sh
+			;;
+			"5")
+				echo "Opcion $Opcion"
+				Pausa
+			;;
+			"6")
+				echo "Opcion $Opcion"
+				Pausa
+			esac
+		else
+			clear
+			exit
+		fi
 	done
 	clear
-	exit
+
 fi
-clear
