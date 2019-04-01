@@ -1,16 +1,6 @@
 #!/bin/bash
 
-Limpiar() {
-	clear
-	for i in $(seq 0 $1) ; do
-		echo ""
-	done
-}
-
-Pausa() {
-	read -p "	Pulsa enter para continuar" X
-}
-
+#Valido los permisos de root
 if [ "$USER" = "root" ]; then	
 	clear
 else
@@ -20,6 +10,7 @@ else
 	exit
 fi
 
+#Genero la ruta relativa del script
 ruta=$0
 ruta=$(echo "${ruta/\/Check-Pass-Config.sh/}")
 
@@ -27,9 +18,8 @@ Interv=$(cat "$ruta/Parametros/Intervalo")
 Dicc=$(cat "$ruta/Parametros/Diccionario")
 Fecha=$(cat "$ruta/Parametros/Ultima-Ejecucion")
 Comando=$(cat "$ruta/Parametros/Comando")
-
-echo ""
-
+# 
+# Genero un fichero de parámetros temporal
 echo 'Este es el script de configuración de "Check-Pass"' > $ruta/temp.txt
 echo 'Parámetros actuales:' >> $ruta/temp.txt
 echo "- Intervalo: 		$Interv" >> $ruta/temp.txt
@@ -42,8 +32,6 @@ echo ""
 dialog --backtitle "Configuración" \
  --keep-window --exit-label "Continuar" --textbox $ruta/temp.txt 0 0 \
  --and-widget --keep-window --yesno "¿Deseas modificar los parametros?" 0 0
-
-rm $ruta/temp.txt
 
 if [ $? -eq 0 ]; then	
 	while true; do
@@ -84,9 +72,14 @@ if [ $? -eq 0 ]; then
 			esac
 		else
 			clear
+			#Borro el fichero temporal
+			rm $ruta/temp.txt
 			exit
 		fi
 	done
-	clear
 
 fi
+clear
+#Borro el fichero temporal
+rm $ruta/temp.txt
+
