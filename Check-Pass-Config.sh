@@ -1,12 +1,10 @@
 #!/bin/bash
 
 #Valido los permisos de root
-if [ "$USER" = "root" ]; then	
+if [ "$USER" != "root" ]; then	
+	dialog --infobox "Necesitas permisos de superusuario" 0 0
+	sleep 1
 	clear
-else
-	echo ""	
-	echo "	Necesitas permisos de root"
-	echo ""	
 	exit
 fi
 
@@ -14,18 +12,18 @@ fi
 ruta=$0
 ruta=$(echo "${ruta/\/Check-Pass-Config.sh/}")
 
-Interv=$(cat "$ruta/Parametros/Intervalo")
+Interv=$(cat "$ruta/Fechas/Intervalo")
 Dicc=$(cat "$ruta/Parametros/Diccionario")
-Fecha=$(cat "$ruta/Parametros/Ultima-Ejecucion")
+Fecha=$(cat "$ruta/Fechas/Fecha1.txt")
 Comando=$(cat "$ruta/Parametros/Comando")
 # 
 # Genero un fichero de parámetros temporal
 echo 'Este es el script de configuración de "Check-Pass"' > $ruta/temp.txt
 echo 'Parámetros actuales:' >> $ruta/temp.txt
-echo "- Intervalo: 		$Interv" >> $ruta/temp.txt
+echo "- Intervalo: 		cada  $Interv días" >> $ruta/temp.txt
 echo "- Diccionario:		$Dicc" >> $ruta/temp.txt
 echo "- Comando:		$Comando" >> $ruta/temp.txt
-echo "- Última ejecucion:	$Fecha" >> $ruta/temp.txt
+echo "- Próxima ejecucion:	$Fecha" >> $ruta/temp.txt
 echo ""
 
 
@@ -39,7 +37,7 @@ if [ $? -eq 0 ]; then
 		Opcion=$(dialog --backtitle "Configuración" --cancel-label "Salir" \
 		--menu "Selecciona una opción" 0 0 0 \
 		1 "Ejecutar Check-Pass ahora" \
-		2 "Seleccionar/Crear diccionario" \
+		2 "Seleccionar/Crear/Añadir diccionario" \
 		3 "Modificar el intervalo de tiempo" \
 		4 "Cambiar paquete de ejecución" \
 		5 "Cambiar fecha de inicio" \
@@ -48,27 +46,23 @@ if [ $? -eq 0 ]; then
 		if [ $? -eq 0 ]; then
 			case "$Opcion"	in
 			"1")
-				echo "Opcion $Opcion"
-				Pausa
+				dialog --infobox "Ejecutando Check-Pass..." 0 0
+				$ruta/Check-Pass.sh
 			;;
 			"2")
-				echo "Opcion $Opcion"
-				Pausa
+				$ruta/Config/Diccionarios-Config.sh
 			;;
 			"3")
-				echo "Opcion $Opcion"
-				Pausa
+				$ruta/Fechas/Intervalo-Config.sh
 			;;
 			"4")
-				bash $ruta/Config/CommandMenu.sh
+				$ruta/Config/CommandMenu.sh
 			;;
 			"5")
-				echo "Opcion $Opcion"
-				Pausa
+				$ruta/Fechas/Fechas-Config.sh
 			;;
 			"6")
-				echo "Opcion $Opcion"
-				Pausa
+				$ruta/Usuarios/Gestion-Usuarios.sh
 			esac
 		else
 			clear

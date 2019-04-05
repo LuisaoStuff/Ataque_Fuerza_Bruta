@@ -49,9 +49,9 @@ for i in $Lista; do
 done
 
 dialog --backtitle "Configuración" \
---title "Seleccionados:" \
---keep-window --exit-label "Continuar" \
---textbox $ruta/Lista-Usuarios.txt 0 0
+	--title "Seleccionados:" \
+	--keep-window --exit-label "Continuar" \
+	--textbox $ruta/Lista-Usuarios.txt 0 0
 
 rm $ruta/temp-users.txt
 clear

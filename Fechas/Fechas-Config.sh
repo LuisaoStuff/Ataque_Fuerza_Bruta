@@ -1,39 +1,13 @@
 #!/bin/bash
 
-ProximaFecha() {
-
-	day1=$(date --file=$ruta/Fecha1.txt +%x | cut -d "/" -f 1)
-	month1=$(date --file=$ruta/Fecha1.txt +%x | cut -d "/" -f 2)
-	year1=$(date --file=$ruta/Fecha1.txt +%x | cut -d "/" -f 3)
-
-	fechacomp1="$year1$month1$day1"
-
-	day2=$(date --file=$ruta/Fecha2.txt +%x | cut -d "/" -f 1)
-	month2=$(date --file=$ruta/Fecha2.txt +%x | cut -d "/" -f 2)
-	year2=$(date --file=$ruta/Fecha2.txt +%x | cut -d "/" -f 3)
-
-	fechacomp2="$year2$month2$day2"
-	
-	fechacutal=$(date +"%y%m%d")
-
-	if [[ "$fechactual" < "$fechacomp1" ]]; then
-		if [[ "$fechacomp1" < "$fechacomp2" ]]; then
-			day=$day1
-			month=$month1
-			year=$year1
-		fi
-	else
-		day=$day2
-		month=$month2
-		year=$year2
-	fi
-}
-
 CambiarFecha() {
+
+day=$(date --file=$ruta/Fecha1.txt +%x | cut -d "/" -f 1)
+month=$(date --file=$ruta/Fecha1.txt +%x | cut -d "/" -f 2)
+year=$(date --file=$ruta/Fecha1.txt +%x | cut -d "/" -f 3)
 
 Fecha=$(dialog --calendar "Fecha inicio" 0 0 $day $month $year 3>&1 1>&2 2>&3)
 clear
-
 
 day=$(echo $Fecha | cut -d "/" -f 1)
 month=$(echo $Fecha | cut -d "/" -f 2)
@@ -43,26 +17,30 @@ Fecha="$year$month$day"
 
 }
 
-
 ruta=$0
-ruta=$(echo "${ruta/Fechas-Config.sh/}")
-
-ProximaFecha
+ruta=$(echo "${ruta/\/Fechas-Config.sh/}")
 
 CambiarFecha
 
-echo $Fecha
-fechacutal=$(date +"%Y%m%d")
-echo $fechacutal
-read X
+if [ $? -eq 0 ];then
 
-while [[ "$Fecha" < "$fechactual" ]]; do
-	CambiarFecha
-done
+	FechaDeHoy=$(date +"%Y%m%d")
+
+	if [ $Fecha -gt $FechaDeHoy ]; then
+		Fecha="$month/$day/$year"
+		date --date="$Fecha" +"%m/%d/%y" > $ruta/Fecha1.txt
+		find / -name Trigger.sh > $ruta/temporal.txt
+		clear
+		rutaTrigger=$(cat $ruta/temporal.txt)
+		rm $ruta/temporal.txt	
+		crontab -r
+		echo "* * $day $month * bash $rutaTrigger" >> /var/spool/cron/crontabs/root
+		A=$(date --file=$ruta/Fecha1.txt +%x)
+		dialog --infobox "Próxima ejecucion: $A" 0 0
+		sleep 2
+	else
+		dialog --msgbox "Debes introducir una fecha válida" 0 0	
+	fi
+fi
 
 
-Fecha="$month/$day/$year"
-
-date --date="$Fecha" +"%m/%d/%y" > Fecha1.txt
-
-date --date="$Fecha+1 week" +"%m/%d/%y" > Fecha2.txt
