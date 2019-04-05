@@ -9,8 +9,8 @@ if [ "$USER" != "root" ]; then
 fi
 
 #Genero la ruta relativa del script
-ruta=$0
-ruta=$(echo "${ruta/\/Check-Pass-Config.sh/}")
+SCRIPT=$(readlink -f $0);
+ruta=`dirname $SCRIPT`;
 
 Interv=$(cat "$ruta/Fechas/Intervalo")
 Dicc=$(cat "$ruta/Parametros/Diccionario")
@@ -50,19 +50,19 @@ if [ $? -eq 0 ]; then
 				$ruta/Check-Pass.sh
 			;;
 			"2")
-				$ruta/Config/Diccionarios-Config.sh
+				source $ruta/Config/Diccionarios-Config.sh "--cancel-label 'Salir'"
 			;;
 			"3")
-				$ruta/Fechas/Intervalo-Config.sh
+				source $ruta/Fechas/Intervalo-Config.sh
 			;;
 			"4")
-				$ruta/Config/CommandMenu.sh
+				source $ruta/Config/CommandMenu.sh
 			;;
 			"5")
-				$ruta/Fechas/Fechas-Config.sh
+				source $ruta/Fechas/Fechas-Config.sh
 			;;
 			"6")
-				$ruta/Usuarios/Gestion-Usuarios.sh
+				source $ruta/Usuarios/Gestion-Usuarios.sh
 			esac
 		else
 			clear

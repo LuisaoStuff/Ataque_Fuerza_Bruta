@@ -34,19 +34,20 @@ if [ "$USER" != "root" ]; then
 	exit
 fi
 
-ruta=$0
-ruta=$(echo "${ruta/\/Diccionarios-Config.sh/}")
+SCRIPT=$(readlink -f $0);
+ruta=`dirname $SCRIPT`;
 
 while true; do
 		
-	Opcion=$(dialog --backtitle "Configuración" --cancel-label "Salir" \
+	Opcion=$(dialog --backtitle "Configuración" $1 \
 	--menu "Selecciona una opción" 0 0 0 \
 	1 "Cambiar el diccionario" \
 	2 "Crear un diccionario (crunch)" \
 	3 "Añadir un diccionario al directorio" \
+	4 "Diccionario por defecto" \
 	3>&1 1>&2 2>&3)
 
-	if [ $? -eq 0 ]; then
+	if [ -n "$Opcion" ]; then
 		case "$Opcion"	in
 		"1")
 		ls $ruta/../Parametros/Diccionarios/ > $ruta/Lista-Diccionarios.txt
@@ -164,9 +165,13 @@ while true; do
 				sleep 1
 				clear			
 			fi
+		;;
+		"4")
+			echo "Top304Thousand-probable-v2.txt" > $ruta/../Parametros/Diccionario
 		esac
 	else
 		clear
+		return 255
 		exit
 	fi
 done

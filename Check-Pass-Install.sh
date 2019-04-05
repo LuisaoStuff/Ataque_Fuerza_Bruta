@@ -23,6 +23,7 @@ ComprobarSalida() {
 
 ComprobarInstalado() {
 	paquete=$1
+	instalado=$2
 	set `whereis $paquete`
 	if [ $# -eq 1 ]; then
 		apt-get install -y $paquete
@@ -33,6 +34,15 @@ ComprobarInstalado() {
 		fi
 	fi
 	return 0
+}
+
+ComprobarDialogInstalado() {
+	if [ "$1" = "dialog no instalado" ]; then
+		echo "No se pudo instalar dialog, prueba a instalarlo manualmente"
+		sleep 2
+		clear
+		exit
+	fi
 }
 
 if [ "$USER" != "root" ]; then
@@ -53,81 +63,24 @@ typeset -a Lista
 typeset -i Instalado
 typeset -a Paquetes
 
-#Paquetes=("crontab" "hydra" "medusa" "ncrack" "dialog")
+Paquetes=("crontab" "hydra" "medusa" "ncrack" "dialog")
+typeset -i indicador
 
-set `whereis crontab`
-if [ $# -eq 1 ]; then
-	apt-get install -y crontab
-	if [ $? -eq 0 ];then
-		Lista[1]="Crontab instalado"
+for i in {0..4}; do
+	set `whereis ${Paquetes[$i]}`
+	indicador=$(ComprobarInstalado ${Paquetes[$i]} $#)
+	if [ $indicador -eq 0 ]; then
+		Lista[$i]="${Paquetes[$i]}	instalado"
 	else
-		Lista[1]="Crontab no instalado"
+		Lista[$i]="${Paquetes[$i]}	no instalado"
 	fi
-else
-	Lista[1]="Crontab instalado"
-fi
+done
 
-set `whereis hydra`
-if [ $# -eq 1 ]; then
-	apt-get install -y hydra
-	if [ $? -eq 0 ];then
-		Lista[2]="Hydra instalado"
-	else
-		Lista[2]="Hydra no instalado"
-	fi
-else
-	Lista[2]="Hydra instalado"
-fi
-
-set `whereis medusa`
-if [ $# -eq 1 ]; then
-	apt-get install -y medusa
-	if [ $? -eq 0 ];then
-		Lista[3]="Medusa instalado"
-	else
-		Lista[3]="Medusa no instalado"
-	fi
-else
-	Lista[3]="Medusa instalado"
-fi
-
-set `whereis ncrack`
-if [ $# -eq 1 ]; then
-	apt-get install -y ncrack
-	if [ $? -eq 0 ];then
-		Lista[4]="ncrack instalado"
-	else
-		Lista[4]="ncrack no instalado"
-	fi
-else
-	Lista[4]="ncrack instalado"
-fi
-
-
-set `whereis dialog`
-if [ $# -eq 1 ]; then
-	apt-get install -y dialog
-	if [ $? -eq 0 ];then
-		Lista[5]="Dialog instalado"
-	else
-		Lista[5]="Dialog no instalado"
-	fi
-else
-	Lista[5]="Dialog instalado"
-fi
-
-
-
-if [ "${Lista[$i]}" = "dialog no instalado" ]; then
-	echo "No se pudo instalar dialog, prueba a instalarlo manualmente"
-	sleep 2
-	clear
-	exit
-fi
+ComprobarDialogInstalado Lista[4]
 
 echo "Se han instalado los siguientes paquetes: " > $ruta/install-temp.txt
 
-for i in {1..5}; do
+for i in {0..4}; do
 	echo "  -${Lista[$i]}" >> $ruta/install-temp.txt
 done
 
@@ -145,16 +98,18 @@ typeset -i Indicador
 i=0
 Indicador=0
 while [ $i -le 5 ]; do
-	${Config[$i]}
-	if [ $? -eq 255 ]; then
+	source ${Config[$i]} "--nocancel"
+	if [ $? -eq 255 -a $i -ne 0 ]; then
 		Menu=("Seleccionar/Crear/Añadir diccionario" "Modificar el intervalo de tiempo" "Cambiar paquete de ejecución" "Cambiar fecha de inicio" "Lista de usuarios")
 		menubox=""
 		typeset -i Opcion
-		for a in {0..$contador}; do
+		for a in {0..$i}; do
 			menubox="$menubox $a ${Menu[$a]} "
 		done
 		Opcion=$(dialog --menu "Elige una de las opciones:" 0 0 0 $menubox 3>&1 1>&2 2>&3)
 		i=$Opcion
+	elif [ $i -eq 0 ];then
+		Opcion=$(dialog --menu "Aun no has avanzado en la instalación:" 0 0 0 1 "Seleccionar/Crear/Añadir diccionario" 3>&1 1>&2 2>&3)
 	else
 		i=$(($i+1))
 	fi	

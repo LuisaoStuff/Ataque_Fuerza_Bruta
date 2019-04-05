@@ -14,8 +14,9 @@ Pausa() {
 	read -p "	Pulsa enter para continuar" X
 }
 
-	ruta=$0
-	ruta=$(echo "${ruta/CommandMenu.sh/}")
+	SCRIPT=$(readlink -f $0);
+	ruta=`dirname $SCRIPT`;
+
 
 	typeset -A Menu
 	find $loc -name "Comando"
@@ -35,11 +36,13 @@ Pausa() {
 		fi
 	done
 
-	Opcion=$(dialog --backtitle "Configuracion" \
+	Opcion=$(dialog $1 --backtitle "Configuracion" \
 	--radiolist "Selecciona un comando" 0 0 $Contador \
 	$radiolist 3>&1 1>&2 2>&3)
-	if [ $? -eq 0 ]; then
+	if [ $Opcion != null ]; then
 		echo "${Menu[$Opcion]}" > $ruta../Parametros/Comando
 		dialog --infobox "Seleccionaste: ${Menu[$Opcion]}" 0 0
 		sleep 2
+	else
+		return 255
 	fi

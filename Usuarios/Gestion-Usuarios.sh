@@ -32,26 +32,31 @@ while read linea <&5; do
 	Contador=$(($Contador+1))
 done
 
-Lista=$(dialog --backtitle "Configuracion" \
+Lista=$(dialog $1 --backtitle "Configuracion" \
 	--separate-output \
 	--checklist "Selecciona un comando" 0 0 $Contador \
 	$checklist 3>&1 1>&2 2>&3)
 
+if [ $Lista != null ];then
 
-Contador=1
-for i in $Lista; do
-	if [ $Contador -eq 1 ]; then
-		echo "${Usuarios[$i]}" > $ruta/Lista-Usuarios.txt
-	else
-		echo "${Usuarios[$i]}" >> $ruta/Lista-Usuarios.txt
-	fi
-	Contador=$(($Contador+1))
-done
+	Contador=1
+	for i in $Lista; do
+		if [ $Contador -eq 1 ]; then
+			echo "${Usuarios[$i]}" > $ruta/Lista-Usuarios.txt
+		else
+			echo "${Usuarios[$i]}" >> $ruta/Lista-Usuarios.txt
+		fi
+		Contador=$(($Contador+1))
+	done
 
-dialog --backtitle "Configuración" \
-	--title "Seleccionados:" \
-	--keep-window --exit-label "Continuar" \
-	--textbox $ruta/Lista-Usuarios.txt 0 0
+	dialog --backtitle "Configuración" \
+		--title "Seleccionados:" \
+		--keep-window --exit-label "Continuar" \
+		--textbox $ruta/Lista-Usuarios.txt 0 0
 
-rm $ruta/temp-users.txt
-clear
+	rm $ruta/temp-users.txt
+	clear
+
+else
+	return 255
+fi

@@ -8,21 +8,24 @@ year=$(date --file=$ruta/Fecha1.txt +%x | cut -d "/" -f 3)
 
 Fecha=$(dialog --calendar "Fecha inicio" 0 0 $day $month $year 3>&1 1>&2 2>&3)
 clear
+if [ $Fecha != null ]; then
 
-day=$(echo $Fecha | cut -d "/" -f 1)
-month=$(echo $Fecha | cut -d "/" -f 2)
-year=$(echo $Fecha | cut -d "/" -f 3)
+	day=$(echo $Fecha | cut -d "/" -f 1)
+	month=$(echo $Fecha | cut -d "/" -f 2)
+	year=$(echo $Fecha | cut -d "/" -f 3)
 
-Fecha="$year$month$day"
-
+	Fecha="$year$month$day"
+else 
+	Fecha="error"
+fi
 }
 
-ruta=$0
-ruta=$(echo "${ruta/\/Fechas-Config.sh/}")
+SCRIPT=$(readlink -f $0);
+ruta=`dirname $SCRIPT`;
 
 CambiarFecha
 
-if [ $? -eq 0 ];then
+if [ "$Fecha" != "error" ];then
 
 	FechaDeHoy=$(date +"%Y%m%d")
 
@@ -41,6 +44,8 @@ if [ $? -eq 0 ];then
 	else
 		dialog --msgbox "Debes introducir una fecha válida" 0 0	
 	fi
+else
+	return 255
 fi
 
 

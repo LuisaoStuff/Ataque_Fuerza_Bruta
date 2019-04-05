@@ -7,15 +7,17 @@ if [ "$USER" != "root" ]; then
 	exit
 fi
 
-ruta=$0
-ruta=$(echo "${ruta/\/Intervalo-Config.sh/}")
+SCRIPT=$(readlink -f $0);
+ruta=`dirname $SCRIPT`;
+
+echo $ruta
 
 Intervalo=$(cat $ruta/Intervalo)
 
-Intervalo=$(dialog --rangebox "Selecciona un nuevo intervalo (días)" \
+Intervalo=$(dialog $1 --rangebox "Selecciona un nuevo intervalo (días)" \
 	0 0 2 15 $Intervalo 3>&1 1>&2 2>&3)
 
-if [ $? -eq 0 ];then
+if [ $Intervalo != null ];then
 	echo "$Intervalo" > $ruta/Intervalo
 	dialog --infobox "Se ejecutará cada $Intervalo días" 0 0
 	cat /var/spool/cron/crontabs/root | tail -1 | cut -d " " -f 3 | grep -o "/"
@@ -27,6 +29,8 @@ if [ $? -eq 0 ];then
 		echo "* * */$Intervalo* * bash $rutaCheckPass" >> /var/spool/cron/crontabs/root
 	fi
 	sleep 1.5
+else
+	return 255
 fi
 
 
