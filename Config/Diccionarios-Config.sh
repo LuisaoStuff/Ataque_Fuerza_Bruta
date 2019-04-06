@@ -1,5 +1,13 @@
 #!/bin/bash
 
+VolverMenu() {
+
+	dialog --yesno "¿Deseas volver al menu?" 0 0
+	if [ $? -eq 1 ];then
+		echo "0" > $ruta/../salida.txt && clear && exit
+	fi
+}
+
 CrunchInstalado() {
 	set `whereis crunch`
 	if [ $# -eq 1 ]; then
@@ -20,9 +28,9 @@ CrunchInstalado() {
 
 CancelarPulsado() {
 	if [ $? -eq 1 ]; then
-		dialog --infobox "Operación cancelada" 0 0		
+		dialog --infobox "Operación cancelada" 0 0
+		VolverMenu		
 		sleep 1
-		exit
 	fi
 }
 
@@ -31,11 +39,10 @@ if [ "$USER" != "root" ]; then
 	dialog --infobox "Necesitas permisos de superusuario" 0 0
 	sleep 1
 	clear
-	exit
+	return 1
 fi
 
-SCRIPT=$(readlink -f $0);
-ruta=`dirname $SCRIPT`;
+ruta=`dirname $0`
 
 while true; do
 		
@@ -46,8 +53,8 @@ while true; do
 	3 "Añadir un diccionario al directorio" \
 	4 "Diccionario por defecto" \
 	3>&1 1>&2 2>&3)
-
-	if [ -n "$Opcion" ]; then
+	echo "$Opcion"
+	if [[ -n "$Opcion" ]]; then
 		case "$Opcion"	in
 		"1")
 		ls $ruta/../Parametros/Diccionarios/ > $ruta/Lista-Diccionarios.txt
@@ -74,7 +81,8 @@ while true; do
 			echo "${Menu[$Opcion]}" > $ruta/../Parametros/Diccionario
 			dialog --infobox "Seleccionaste: ${Menu[$Opcion]}" 0 0
 			sleep 1.5
-		fi	
+		fi
+		VolverMenu	
 		;;
 		"2")
 			
@@ -88,13 +96,13 @@ while true; do
 					dialog --msgbox "Instalación existosa" 0 0
 				fi
 			else
-				exit
+				echo "254"  > $ruta/../salida.txt && clear && exit
 			fi
 		fi
 
 		if [ $Instalado -eq 1 ]; then
 			dialog --ok-label "Volver" --msgbox "No se puede continuar sin crunch instalado" 0 0
-			exit
+			echo "254"  > $ruta/../salida.txt && clear && exit
 		fi
 		LongMin=$(dialog --rangebox "Selecciona una longitud mínima de contraseña" \
 		0 0 1 10 5 3>&1 1>&2 2>&3)
@@ -134,14 +142,14 @@ while true; do
 		PID=$(echo $2)
 		kill -9 $PID
 		dialog --backtitle "Configuración" \
-		 --keep-window --exit-label "Continuar" --textbox $ruta/tam-temp.txt 0 0 \
+		 --keep-window --echo "254"  > $ruta/../salida.txt && clear && exit-label "Continuar" --textbox $ruta/tam-temp.txt 0 0 \
 		 --and-widget --keep-window --yesno "¿Deseas continuar con la creacion del diccionario?" 0 0
 		if [ $? -eq 1 ]; then
 			dialog --infobox "Operación cancelada" 0 0		
 			rm $ruta/tam-temp.txt
 			rm $nombre
 			sleep 1
-			exit
+			echo "254"  > $ruta/../salida.txt && clear && exit
 		fi
 		echo ""
 		clear
@@ -149,6 +157,7 @@ while true; do
 		crunch $LongMin $LongMax [$Caracteres] -o $nombre 2&> "$ruta/tam-temp.txt"
 		dialog --msgbox "Proceso finalizado" 0 0
 		rm $ruta/tam-temp.txt
+		VolverMenu
 		;;
 		"3")
 			destino="$ruta/../Parametros/Diccionarios/"
@@ -157,7 +166,7 @@ while true; do
 			dialog --backtitle "Configuración" --yesno "¿Estás seguro de mover $RUTA a $destino?" 0 0
 			if [ $? -eq 0 ]; then
 				mv $RUTA $destino
-				dialog --infobox "Operación exitosa" 0 0
+				dialog --infobox "Operación echo "254"  > $ruta/../salida.txt && clear && exitosa" 0 0
 				sleep 1
 				clear
 			else
@@ -165,14 +174,17 @@ while true; do
 				sleep 1
 				clear			
 			fi
+		VolverMenu
 		;;
 		"4")
 			echo "Top304Thousand-probable-v2.txt" > $ruta/../Parametros/Diccionario
+			dialog --infobox "Se ha establecido el diccionario por defecto (Top304Thousand-probable-v2.txt)" 0 0
+			sleep 2
+			VolverMenu
 		esac
 	else
 		clear
-		return 255
-		exit
+		echo "255"  > $ruta/../salida.txt && clear && exit
 	fi
 done
 clear

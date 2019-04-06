@@ -1,5 +1,28 @@
 #!/bin/bash
 
+ImprimirMenu() {
+	typeset -i Opcion
+	Indice=$(($1+1))
+	Opcion=$(dialog --cancel-label "Salir" --menu "Aun no has avanzado en la instalación:" 0 0 0 \
+		1 "Seleccionar/Crear/Añadir diccionario" \
+		2 "Modificar el intervalo de tiempo" \
+		3 "Cambiar paquete de ejecución" \
+		4 "Cambiar fecha de inicio" \
+		5 "Gestion de usuarios" 3>&1 1>&2 2>&3)
+
+	while [ $Opcion -gt $Indice ]; do
+		dialog --msgbox "Aún no has configurado los parámetros anteriores" 0 0
+		Opcion=$(dialog --cancel-label "Salir" --menu "Aun no has avanzado en la instalación:" 0 0 0 \
+		1 "Seleccionar/Crear/Añadir diccionario" \
+		2 "Modificar el intervalo de tiempo" \
+		3 "Cambiar paquete de ejecución" \
+		4 "Cambiar fecha de inicio" \
+		5 "Gestion de usuarios" 3>&1 1>&2 2>&3)
+	done
+	return $Opcion
+}
+
+
 ComprobarSalida() {
 	typeset -i salida
 	typeset -i contador
@@ -41,7 +64,7 @@ ComprobarDialogInstalado() {
 		echo "No se pudo instalar dialog, prueba a instalarlo manualmente"
 		sleep 2
 		clear
-		exit
+		clear && exit
 	fi
 }
 
@@ -49,11 +72,10 @@ if [ "$USER" != "root" ]; then
 	echo "Debes tener permisos de superusuario"
 	sleep 1.5
 	clear
-	exit
+	clear && exit
 fi
 
-ruta=$0
-ruta=$(echo "${ruta/\/Check-Pass-Install.sh/}")
+ruta=`dirname $0`
 
 echo "Este es el script de instalación de Check-Pass"
 
@@ -94,23 +116,19 @@ typeset -a Config
 Config=($ruta/Config/Diccionarios-Config.sh $ruta/Fechas/Intervalo-Config.sh $ruta/Config/CommandMenu.sh $ruta/Fechas/Fechas-Config.sh $ruta/Usuarios/Gestion-Usuarios.sh)
 
 typeset -i i
-typeset -i Indicador
+typeset -i Indice
+typeset -i salida
 i=0
 Indicador=0
 while [ $i -le 5 ]; do
-	source ${Config[$i]} "--nocancel"
-	if [ $? -eq 255 -a $i -ne 0 ]; then
-		Menu=("Seleccionar/Crear/Añadir diccionario" "Modificar el intervalo de tiempo" "Cambiar paquete de ejecución" "Cambiar fecha de inicio" "Lista de usuarios")
-		menubox=""
-		typeset -i Opcion
-		for a in {0..$i}; do
-			menubox="$menubox $a ${Menu[$a]} "
-		done
-		Opcion=$(dialog --menu "Elige una de las opciones:" 0 0 0 $menubox 3>&1 1>&2 2>&3)
-		i=$Opcion
-	elif [ $i -eq 0 ];then
-		Opcion=$(dialog --menu "Aun no has avanzado en la instalación:" 0 0 0 1 "Seleccionar/Crear/Añadir diccionario" 3>&1 1>&2 2>&3)
-	else
+	${Config[$i]} "--nocancel"
+	salida=$(cat $ruta/salida.txt)
+	if [ $salida -eq 255 ]; then
+
+		ImprimirMenu $i
+		Opcion=$?
+		i=$(($Opcion-1))
+	elif [ $salida -eq 0 ]; then
 		i=$(($i+1))
 	fi	
 	

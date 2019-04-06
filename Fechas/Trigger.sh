@@ -7,19 +7,17 @@ if [ "$USER" != "root" ]; then
 	exit
 fi
 
-ruta=$0
-ruta=$(echo "${ruta/\/Trigger.sh/}")
+ruta=`dirname $0`
+
+SCRIPT=$(readlink -f $0)
+dir=`dirname $SCRIPT`
+dir=`dirname $dir`
 
 bash $ruta/../Check-Pass.sh
 
 Intervalo=$(cat $ruta/Intervalo)
 
 crontab -r
+dir="$dir/Check-Pass.sh"
+echo "* * */$Intervalo* * bash $dir" >> /var/spool/cron/crontabs/root
 
-find / -name Check-Pass.sh > $ruta/tempor.txt
-rutaCheckPass=$(cat $ruta/tempor.txt)
-rm $ruta/tempor.txt
-
-echo "* * */$Intervalo* * bash $rutaCheckPass" >> /var/spool/cron/crontabs/root
-
-echo "Ejecutado el día $(date)" >> ~/Historial.txt

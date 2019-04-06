@@ -50,19 +50,19 @@ if [ $? -eq 0 ]; then
 				$ruta/Check-Pass.sh
 			;;
 			"2")
-				source $ruta/Config/Diccionarios-Config.sh "--cancel-label 'Salir'"
+				$ruta/Config/Diccionarios-Config.sh '--cancel-label "Salir"'
 			;;
 			"3")
-				source $ruta/Fechas/Intervalo-Config.sh
+				$ruta/Fechas/Intervalo-Config.sh
 			;;
 			"4")
-				source $ruta/Config/CommandMenu.sh
+				$ruta/Config/CommandMenu.sh
 			;;
 			"5")
-				source $ruta/Fechas/Fechas-Config.sh
+				$ruta/Fechas/Fechas-Config.sh
 			;;
 			"6")
-				source $ruta/Usuarios/Gestion-Usuarios.sh
+				$ruta/Usuarios/Gestion-Usuarios.sh
 			esac
 		else
 			clear

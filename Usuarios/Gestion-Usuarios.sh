@@ -58,5 +58,5 @@ if [ $Lista != null ];then
 	clear
 
 else
-	return 255
+	echo "255"  > $ruta/salida.txt && exit
 fi

@@ -20,8 +20,11 @@ else
 fi
 }
 
-SCRIPT=$(readlink -f $0);
-ruta=`dirname $SCRIPT`;
+ruta=`dirname $0`;
+
+SCRIPT=$(readlink -f $0)
+dir=`dirname $SCRIPT`
+dir=`dirname $dir`
 
 CambiarFecha
 
@@ -29,23 +32,24 @@ if [ "$Fecha" != "error" ];then
 
 	FechaDeHoy=$(date +"%Y%m%d")
 
-	if [ $Fecha -gt $FechaDeHoy ]; then
-		Fecha="$month/$day/$year"
-		date --date="$Fecha" +"%m/%d/%y" > $ruta/Fecha1.txt
-		find / -name Trigger.sh > $ruta/temporal.txt
-		clear
-		rutaTrigger=$(cat $ruta/temporal.txt)
-		rm $ruta/temporal.txt	
-		crontab -r
-		echo "* * $day $month * bash $rutaTrigger" >> /var/spool/cron/crontabs/root
-		A=$(date --file=$ruta/Fecha1.txt +%x)
-		dialog --infobox "Próxima ejecucion: $A" 0 0
-		sleep 2
-	else
-		dialog --msgbox "Debes introducir una fecha válida" 0 0	
-	fi
+	while [ $Fecha -lt $FechaDeHoy ]; do
+		dialog --msgbox "Debes introducir una fecha válida" 0 0
+		CambiarFecha
+	done
+	Fecha="$month/$day/$year"
+	date --date="$Fecha" +"%m/%d/%y" > $ruta/Fecha1.txt
+	crontab -r
+	dir="$dir/Fechas/Trigger.sh"
+	echo $dir
+	read X
+	echo "* * $day $month * bash $dir" >> /var/spool/cron/crontabs/root
+	A=$(date --file=$ruta/Fecha1.txt +%x)
+	dialog --infobox "Próxima ejecucion: $A" 0 0
+	sleep 2
+
+
 else
-	return 255
+	echo "255"  > $ruta/../salida.txt && clear && exit
 fi
 
 
