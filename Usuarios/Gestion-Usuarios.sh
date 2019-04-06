@@ -37,7 +37,7 @@ Lista=$(dialog $1 --backtitle "Configuracion" \
 	--checklist "Selecciona un comando" 0 0 $Contador \
 	$checklist 3>&1 1>&2 2>&3)
 
-if [ $Lista != null ];then
+if [[ -n "$Lista" ]];then
 
 	Contador=1
 	for i in $Lista; do

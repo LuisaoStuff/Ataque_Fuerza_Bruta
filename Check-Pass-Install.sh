@@ -120,7 +120,7 @@ typeset -i Indice
 typeset -i salida
 i=0
 Indicador=0
-while [ $i -le 5 ]; do
+while [ $i -le 4 ]; do
 	${Config[$i]} "--nocancel"
 	salida=$(cat $ruta/salida.txt)
 	if [ $salida -eq 255 ]; then
@@ -133,3 +133,6 @@ while [ $i -le 5 ]; do
 	fi	
 	
 done
+
+dialog --msgbox "Instalación completada" 0 0
+clear

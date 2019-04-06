@@ -40,14 +40,11 @@ if [ "$Fecha" != "error" ];then
 	date --date="$Fecha" +"%m/%d/%y" > $ruta/Fecha1.txt
 	crontab -r
 	dir="$dir/Fechas/Trigger.sh"
-	echo $dir
-	read X
 	echo "* * $day $month * bash $dir" >> /var/spool/cron/crontabs/root
 	A=$(date --file=$ruta/Fecha1.txt +%x)
 	dialog --infobox "Próxima ejecucion: $A" 0 0
-	sleep 2
-
-
+	sleep 1
+	echo "0"  > $ruta/../salida.txt && clear && exit
 else
 	echo "255"  > $ruta/../salida.txt && clear && exit
 fi

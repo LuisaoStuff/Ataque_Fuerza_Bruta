@@ -77,10 +77,12 @@ while true; do
 		Opcion=$(dialog --backtitle "Configuracion" \
 		--radiolist "Selecciona un diccionario" 0 0 $Contador \
 		$radiolist 3>&1 1>&2 2>&3)
-		if [ $? -eq 0 ]; then
-			echo "${Menu[$Opcion]}" > $ruta/../Parametros/Diccionario
-			dialog --infobox "Seleccionaste: ${Menu[$Opcion]}" 0 0
-			sleep 1.5
+		if [[ $? -eq 0 ]]; then
+			if [[ -n "$Opcion" ]];then
+				echo "${Menu[$Opcion]}" > $ruta/../Parametros/Diccionario
+				dialog --infobox "Seleccionaste: ${Menu[$Opcion]}" 0 0
+				sleep 1.5
+			fi
 		fi
 		VolverMenu	
 		;;
