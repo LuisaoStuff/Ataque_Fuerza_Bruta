@@ -131,7 +131,6 @@ while [ $i -le 4 ]; do
 	elif [ $salida -eq 0 ]; then
 		i=$(($i+1))
 	fi	
-	
 done
 
 dialog --msgbox "Instalación completada" 0 0

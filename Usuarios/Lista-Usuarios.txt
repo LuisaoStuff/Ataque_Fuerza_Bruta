@@ -3,4 +3,3 @@ daemon
 sys
 luis
 mysql
-postgres

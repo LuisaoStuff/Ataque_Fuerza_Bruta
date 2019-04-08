@@ -9,8 +9,7 @@ if [ "$USER" != "root" ]; then
 fi
 
 #Genero la ruta relativa del script
-SCRIPT=$(readlink -f $0);
-ruta=`dirname $SCRIPT`;
+ruta=`dirname $0`
 
 Interv=$(cat "$ruta/Fechas/Intervalo")
 Dicc=$(cat "$ruta/Parametros/Diccionario")
@@ -43,7 +42,7 @@ if [ $? -eq 0 ]; then
 		5 "Cambiar fecha de inicio" \
 		6 "Lista de usuarios" 3>&1 1>&2 2>&3)
 
-		if [ $? -eq 0 ]; then
+		if [[ -n "$Opcion" ]]; then
 			case "$Opcion"	in
 			"1")
 				dialog --infobox "Ejecutando Check-Pass..." 0 0
