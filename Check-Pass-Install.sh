@@ -90,6 +90,7 @@ typeset -i indicador
 
 for i in {0..4}; do
 	set `whereis ${Paquetes[$i]}`
+	ComprobarInstalado ${Paquetes[$i]} $#
 	indicador=$(ComprobarInstalado ${Paquetes[$i]} $#)
 	if [ $indicador -eq 0 ]; then
 		Lista[$i]="${Paquetes[$i]}	instalado"
@@ -127,6 +128,10 @@ while [ $i -le 4 ]; do
 
 		ImprimirMenu $i
 		Opcion=$?
+		if [ $Opcion -eq 255 -o $Opcion -eq 0 ]; then
+			clear
+			exit
+		fi
 		i=$(($Opcion-1))
 	elif [ $salida -eq 0 ]; then
 		i=$(($i+1))
