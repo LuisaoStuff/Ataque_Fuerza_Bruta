@@ -1,6 +1,0 @@
-Este es el script de configuración de "Check-Pass"
-Parámetros actuales:
-- Intervalo: 		cada  8  días
-- Diccionario:		Top304Thousand-probable-v2.txt
-- Comando:		Medusa
-- Próxima ejecucion:	04/17/19

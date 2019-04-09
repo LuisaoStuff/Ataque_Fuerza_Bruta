@@ -137,6 +137,6 @@ while [ $i -le 4 ]; do
 		i=$(($i+1))
 	fi	
 done
-
+rm -rf $ruta/salida.txt
 dialog --msgbox "Instalación completada" 0 0
 clear
