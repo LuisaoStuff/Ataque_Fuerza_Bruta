@@ -26,7 +26,7 @@ Script de ejecución del ataque de fuerza bruta
 Se ejecuta la primera vez cuando se establece una nueva fecha inicial. Ejecuta Check-Pass y seguidamente establece en crontab la ejecución de Check-Pass según el intervalo de tiempo marcado en el fichero correspondiente.
 
 ## CommandMenu
-Despliega un menú de seleccion con los binarios disponibles en el fichero [ListaComandos.txt](ScriptSistemas/Config/ListaComandos.txt) para realizar el ataque de fuerza bruta
+Despliega un menú de seleccion con los binarios disponibles en el fichero [ListaComandos.txt](Config/ListaComandos.txt) para realizar el ataque de fuerza bruta
 
 ## Diccionarios-Config
 Despliega un menú que te permite elegir una de las siguientes funciones:
