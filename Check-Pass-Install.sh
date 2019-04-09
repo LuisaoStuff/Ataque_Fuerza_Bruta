@@ -124,7 +124,7 @@ typeset -i SALIDA
 SALIDA=0
 
 typeset -a Config
-Config=($ruta/Config/Diccionarios-Config.sh $ruta/Fechas/Intervalo-Config.sh $ruta/Config/CommandMenu.sh $ruta/Fechas/Fechas-Config.sh $ruta/Usuarios/Gestion-Usuarios.sh)
+Config=($ruta/Config/Diccionarios-Config.sh $ruta/Fechas/Intervalo-Config.sh $ruta/Config/CommandMenu.sh $ruta/Usuarios/Gestion-Usuarios.sh $ruta/Fechas/Fechas-Config.sh)
 
 typeset -i i
 typeset -i Indice

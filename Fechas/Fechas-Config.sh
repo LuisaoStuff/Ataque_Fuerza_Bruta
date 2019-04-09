@@ -26,11 +26,13 @@ SCRIPT=$(readlink -f $0)
 dir=`dirname $SCRIPT`
 dir=`dirname $dir`
 
+intervalo=$(cat $ruta/Intervalo)
+
 CambiarFecha
 
 if [ "$Fecha" != "error" ];then
 
-	FechaMinima=$(date --date="+1 week" +"%Y%m%d")
+	FechaMinima=$(date --date="+$intervalo days" +"%Y%m%d")
 
 	while [ $Fecha -lt $FechaMinima ]; do
 		F=$(date --date="+1 week" +%x)
