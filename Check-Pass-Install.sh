@@ -1,5 +1,13 @@
 #!/bin/bash
 
+CancelarPulsado() {
+	if [ $? -eq 1 ]; then
+		dialog --infobox "No se creará el enlace simbólico" 0 0
+		VolverMenu		
+		sleep 1
+	fi
+}
+
 ImprimirMenu() {
 	typeset -i Opcion
 	Indice=$(($1+1))
@@ -77,6 +85,8 @@ fi
 
 ruta=`dirname $0`
 
+SCRT=$(readlink -f $0)
+
 echo "Este es el script de instalación de Check-Pass"
 
 echo "Comprobando el estado de los paquetes necesarios..."
@@ -143,4 +153,29 @@ while [ $i -le 4 ]; do
 done
 rm -rf $ruta/salida.txt
 dialog --msgbox "Instalación completada" 0 0
+dialog --yesno "¿Deseas crear un enlace simbólico al script de configuración?" 0 0
+if [ $? -eq 0 ]; then
+
+	Directorio=$(dialog --inputbox "Introduce un directorio válido para ubicar el enlace:" 0 0 3>&1 1>&2 2>&3)
+	CancelarPulsado
+	cd $Directorio
+	val=$(echo $?)
+	while [ $val -eq 1 ]; do
+		dialog --msgbox "Debes introducir un directorio válido." 0 0		
+		Directorio=$(dialog --inputbox "Introduce un directorio válido para ubicar el enlace:" 0 0 3>&1 1>&2 2>&3)
+		CancelarPulsado
+		cd $Directorio
+		val=$(echo $?)
+	done
+	
+	Final=$(echo "$Directorio" | rev)
+	Final=$(echo "${Final:0:${#Final}-${#Final}+1}")	# Compruebo que tenga barra al final, si la tiene se la quito para evitar problemas
+	if [ "$Final" = "/" ]; then				# Al ejecutar el comando ln -s
+		Directorio=$(echo "${Directorio:0:${#Directorio}-1}")
+	fi
+
+	Nombre=$(dialog --inputbox "Introduce el nombre del enlace:" 0 0 3>&1 1>&2 2>&3)
+	CancelarPulsado
+	ln -s $SCRT $Directorio/$Nombre
+fi
 clear

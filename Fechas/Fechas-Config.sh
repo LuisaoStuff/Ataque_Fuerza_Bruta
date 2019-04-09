@@ -33,7 +33,8 @@ if [ "$Fecha" != "error" ];then
 	FechaMinima=$(date --date="+1 week" +"%Y%m%d")
 
 	while [ $Fecha -lt $FechaMinima ]; do
-		dialog --msgbox "Debes introducir una fecha, que como mínimo falte aún una semana" 0 0
+		F=$(date --date="+1 week" +%x)
+		dialog --msgbox "Debes introducir una fecha, que como mínimo falte aún una semana (Como mínimo el $F)" 0 0
 		CambiarFecha
 	done
 	Fecha="$month/$day/$year"
