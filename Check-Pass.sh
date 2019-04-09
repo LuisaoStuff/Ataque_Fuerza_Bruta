@@ -16,6 +16,8 @@ fi
 
 ruta=`dirname $0`;
 
+$ruta/Usuarios/Auditoria-Contraseñas.sh
+
 Comando=$(cat $ruta/Parametros/Comando)
 Diccionario=$(cat $ruta/Parametros/Diccionario)
 

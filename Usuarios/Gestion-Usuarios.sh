@@ -1,9 +1,8 @@
 #!/bin/bash
 
-ruta=$0
-ruta=$(echo "${ruta/Gestion-Usuarios.sh/}")
+ruta=`dirname $0`;
 
-cat /etc/passwd | cut -d ":" -f 1 > $ruta/temp-users.txt
+cat /etc/shadow |cut -d ":" -f 1,2 | grep -v "*" | grep -v "!" | cut -d ":" -f 1 > $ruta/temp-users.txt
 exec 5< $ruta/temp-users.txt
 Contador=1
 checklist=""
@@ -43,8 +42,10 @@ if [[ -n "$Lista" ]];then
 	for i in $Lista; do
 		if [ $Contador -eq 1 ]; then
 			echo "${Usuarios[$i]}" > $ruta/Lista-Usuarios.txt
+			cat /etc/shadow |cut -d ":" -f 1,2 | grep -v "*" | grep -v "!" | grep ${Usuarios[$i]} > $ruta/UsuariosYContraseñas.txt
 		else
 			echo "${Usuarios[$i]}" >> $ruta/Lista-Usuarios.txt
+			cat /etc/shadow |cut -d ":" -f 1,2 | grep -v "*" | grep -v "!" | grep ${Usuarios[$i]} >> $ruta/UsuariosYContraseñas.txt
 		fi
 		Contador=$(($Contador+1))
 	done
