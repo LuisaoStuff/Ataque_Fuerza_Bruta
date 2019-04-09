@@ -2,7 +2,7 @@
 
 VolverMenu() {
 
-	dialog --yesno "¿Deseas volver al menu?" 0 0
+	dialog --yesno "¿Deseas modificar alguna opción más? $Extra" 0 0
 	if [ $? -eq 1 ];then
 		echo "0" > $ruta/../salida.txt && clear && exit
 	fi
@@ -43,6 +43,8 @@ if [ "$USER" != "root" ]; then
 fi
 
 ruta=`dirname $0`
+
+Extra=$2
 
 while true; do
 		

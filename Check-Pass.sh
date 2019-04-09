@@ -44,7 +44,7 @@ Comando=$(cat "$ruta/Parametros/Comando" | sed q2)
 Dic=$(cat $ruta/Parametros/Diccionario)
 
 Diccionario="$ruta/Parametros/Diccionarios/$Dic"
-Usuarios="$ruta/Usuarios/Lista-Usuarios.txt"
+Usuarios="$ruta/Usuarios/Auditoria.txt"
 
 
 case "$Comando" in

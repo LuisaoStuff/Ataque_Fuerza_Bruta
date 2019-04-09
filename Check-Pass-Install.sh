@@ -122,7 +122,11 @@ typeset -i salida
 i=0
 Indicador=0
 while [ $i -le 4 ]; do
-	${Config[$i]} "--nocancel"
+	if [ $i -eq 0 ];then	
+		${Config[$i]} "--nocancel" "(Pulsa 'no' para continuar la instalacion)"
+	else
+		${Config[$i]} "--nocancel"
+	fi
 	salida=$(cat $ruta/salida.txt)
 	if [ $salida -eq 255 ]; then
 

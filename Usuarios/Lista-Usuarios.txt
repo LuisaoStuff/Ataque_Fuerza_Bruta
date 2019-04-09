@@ -1,5 +1,3 @@
 root
-daemon
-sys
 luis
-mysql
+postgres
