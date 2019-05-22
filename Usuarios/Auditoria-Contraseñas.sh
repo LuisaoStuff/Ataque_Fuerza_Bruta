@@ -21,9 +21,7 @@ exec 5< $ruta/UsuariosYContraseñas.txt
 exec 6< $ruta/UsuariosYContraseñasActual.txt
 echo "" > $ruta/Auditoria.txt
 while read linea <&6 && read usuario <&5; do
-	echo $linea
-	echo $usuario
-	read X		
+
 	if [ "$linea" != "$usuario" ]; then
 		cat /etc/shadow | grep $linea | cut -d ":" -f 1 >> $ruta/Auditoria.txt
 	fi

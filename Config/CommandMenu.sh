@@ -35,7 +35,7 @@ Opcion=$(dialog $1 --backtitle "Configuracion" \
 --radiolist "Selecciona un comando" 0 0 $Contador \
 $radiolist 3>&1 1>&2 2>&3)
 if [[ -n $Opcion ]]; then
-	echo "${Menu[$Opcion]}" > $ruta../Parametros/Comando
+	echo "${Menu[$Opcion]}" > $ruta/../Parametros/Comando
 	dialog --infobox "Seleccionaste: ${Menu[$Opcion]}" 0 0
 	sleep 2
 	echo "0"  > $ruta/../salida.txt && clear && exit

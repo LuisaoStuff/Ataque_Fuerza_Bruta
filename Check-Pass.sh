@@ -48,11 +48,11 @@ Usuarios="$ruta/Usuarios/Auditoria.txt"
 
 
 case "$Comando" in
-"Medusa")
+"Hydra")
 	hydra -L $Usuarios -P $Diccionario -u -o $ruta/Cuentas-Vulnerables.txt
 ;;
-"Hydra")
-	medusa -h $IP -U $Usuarios -P $Diccionario -C $ruta/Cuentas-Vulnerables.txt
+"Medusa")
+	medusa -M ssh -h 127.0.0.1 -U $Usuarios -P $Diccionario -O $ruta/Cuentas-Vulnerables.txt
 esac
 
 clear
