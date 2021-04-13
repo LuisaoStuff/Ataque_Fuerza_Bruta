@@ -1,11 +1,7 @@
 # Ataque de Fuerza Bruta
 
 ###	Escribe un script que compruebe la fortaleza de las contraseñas de los usuarios, haciendo semanalmente un ataque de diccionario/fuerza bruta contra los hashes de las contraseñas que han cambiado en la última semana.
-	Esta aplicación está conformada por distintas carpetas y scripts, divididos por funciones y ficheros de
-	configuración. Esto permite un  mayor orden  en el código. Auque  inicialmente se ejecutaba cada semana,
-	ahora existe un script  de  instalación  y otro de configuración  que te permiten modificar todos estos 
-	parámetros. Desde  el  establecimiento  del intervalo  de tiempo,  la fecha de la primera auditoría, la 
-	elección / generación del diccionario, etc.
+Esta aplicación está conformada por distintas carpetas y scripts, divididos por funciones y ficheros de configuración. Esto permite un  mayor orden  en el código. Auque  inicialmente se ejecutaba cada semana, ahora existe un script  de  instalación  y otro de configuración  que te permiten modificar todos estos  parámetros. Desde  el  establecimiento  del intervalo  de tiempo,  la fecha de la primera auditoría, la elección / generación del diccionario, etc.
 
 Para un mejor entendimiento del código dejo la estructura de la aplicación:
 
